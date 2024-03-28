@@ -1,22 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const App = () => {
-  const initialCards = [
-    'Mariam',
-    'Asana',
-    'Afa',
-    'Musah',
-    'Latif',
-    'Amba',
-    'Moroo',
-    'Lolo',
-    'Kambang',
-    'Fatima',
-    'Abiba',
-    'Memuna',
-  ];
-
-  const [cards, setCards] = useState(initialCards);
+  const [cards, setCards] = useState([]);
 
   const shuffle = (array) => {
     return array.sort(() => Math.random() - 0.5);
@@ -26,12 +11,40 @@ const App = () => {
     setCards(shuffle([...cards]));
   };
 
+  const getAllPokeman = async () => {
+    const url = 'https://pokeapi.co/api/v2/pokemon';
+    const result = await fetch(`${url}?limit=12`);
+    const data = await result.json();
+
+    const createPokemanObject = async (results) => {
+      const promises = results.map(async (pokemon) => {
+        const pokemanObjectResult = await fetch(`${url}/${pokemon.name}`);
+        const pokemanObject = await pokemanObjectResult.json();
+        return pokemanObject;
+      });
+
+      const pokemanObjects = await Promise.all(promises);
+      return pokemanObjects;
+    };
+
+    const pokemanObjects = await createPokemanObject(data.results);
+
+    console.log(pokemanObjects);
+
+    setCards(pokemanObjects);
+  };
+
+  useEffect(() => {
+    getAllPokeman();
+  }, []);
+
   return (
-    <div>
+    <div className="app">
+      {' '}
       {cards.map((card, index) => (
         <div className="card" key={index} onClick={handleShuffle}>
-          {card}
-          <p>Name</p>
+          <img src={card.sprites.front_default} alt={card.name} />
+          <p>Name: {card.name}</p>
         </div>
       ))}
     </div>
