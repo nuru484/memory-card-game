@@ -29,8 +29,9 @@ const App = () => {
   return (
     <div>
       {cards.map((card, index) => (
-        <div key={index} onClick={handleShuffle}>
+        <div className="card" key={index} onClick={handleShuffle}>
           {card}
+          <p>Name</p>
         </div>
       ))}
     </div>
