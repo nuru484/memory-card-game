@@ -1,7 +1,38 @@
+import { useState } from 'react';
+
 const App = () => {
+  const initialCards = [
+    'Mariam',
+    'Asana',
+    'Afa',
+    'Musah',
+    'Latif',
+    'Amba',
+    'Moroo',
+    'Lolo',
+    'Kambang',
+    'Fatima',
+    'Abiba',
+    'Memuna',
+  ];
+
+  const [cards, setCards] = useState(initialCards);
+
+  const shuffle = (array) => {
+    return array.sort(() => Math.random() - 0.5);
+  };
+
+  const handleShuffle = () => {
+    setCards(shuffle([...cards]));
+  };
+
   return (
     <div>
-      <h1>Hello Memory</h1>
+      {cards.map((card, index) => (
+        <div key={index} onClick={handleShuffle}>
+          {card}
+        </div>
+      ))}
     </div>
   );
 };
