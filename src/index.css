@@ -2,6 +2,6 @@
   background-color: bisque;
   margin: 10px;
 }
-.app {
+.cards-container {
   display: flex;
 }
