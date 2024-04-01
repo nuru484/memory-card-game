@@ -1,8 +1,8 @@
-const ScoreBoard = () => {
+const ScoreBoard = ({ currentScore, bestScore }) => {
   return (
     <div className="scoreBoard">
-      <p>Current Score</p>
-      <p>Best Score</p>
+      <p>Current Score: {currentScore}</p>
+      <p>Best Score: {bestScore}</p>
     </div>
   );
 };

@@ -1,56 +1,51 @@
 import { useState, useEffect } from 'react';
 import ScoreBoard from './ScoreBoard';
 import Card from './Card';
+import getAllPokeman from './api-call';
 
 const App = () => {
   const [cards, setCards] = useState([]);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
+  const [clickedCards, setClickedCards] = useState([]);
 
   const shuffle = (array) => {
     return array.sort(() => Math.random() - 0.5);
   };
 
-  const handleShuffle = () => {
-    setCards(shuffle([...cards]));
-  };
+  const handleScores = (clickedCard) => {
+    const isCardAlreadyClicked = clickedCards.some(
+      (card) => card.id === clickedCard.id
+    );
 
-  const getAllPokeman = async () => {
-    try {
-      const url = 'https://pokeapi.co/api/v2/pokemon';
-      const result = await fetch(`${url}?limit=12`);
-      const data = await result.json();
+    if (!isCardAlreadyClicked) {
+      setClickedCards([...clickedCards, clickedCard]);
+      setCurrentScore(currentScore + 1);
+    } else {
+      currentScore > bestScore ? setBestScore(currentScore) : '';
 
-      const createPokemanObject = async (results) => {
-        const promises = results.map(async (pokemon) => {
-          const pokemanObjectResult = await fetch(`${url}/${pokemon.name}`);
-          const pokemanObject = await pokemanObjectResult.json();
-          return pokemanObject;
-        });
-
-        const pokemanObjects = await Promise.all(promises);
-        return pokemanObjects;
-      };
-
-      const pokemanObjects = await createPokemanObject(data.results);
-
-      setCards(pokemanObjects);
-    } catch (error) {
-      console.error('Error fetching Pokémon data:', error);
+      setCurrentScore(0);
+      setClickedCards([]);
     }
   };
 
   useEffect(() => {
-    getAllPokeman();
+    getAllPokeman(setCards);
   }, []);
 
   return (
     <div className="app">
-      <ScoreBoard />
+      <ScoreBoard currentScore={currentScore} bestScore={bestScore} />
       <div className="cards-container">
         {cards.map((card, index) => (
           <Card
             imageUrl={card.sprites.front_default}
             name={card.name}
-            handleShuffle={handleShuffle}
+            handleShuffle={() => {
+              setCards(shuffle([...cards]));
+            }}
+            handleScores={handleScores}
+            card={card}
             key={index}
           />
         ))}
