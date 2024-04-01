@@ -35,7 +35,18 @@ const App = () => {
 
   return (
     <div className="app">
-      <ScoreBoard currentScore={currentScore} bestScore={bestScore} />
+      <div className="header">
+        <div className="description">
+          <h1>Memory Card Game</h1>
+          <p>
+            Get points by clicking on an image but don't click on any more than
+            once!
+          </p>
+        </div>
+
+        <ScoreBoard currentScore={currentScore} bestScore={bestScore} />
+      </div>
+
       <div className="cards-container">
         {cards.map((card, index) => (
           <Card
